@@ -1,0 +1,17 @@
+<resources>
+    <string name="mapper_not_found">
+        Mapper is not registered for class %s. Register Mapper in WellConfig or consider overloaded method WellSql.insert(T, Mapper)
+    </string>
+
+    <string name="table_not_found">
+        Can\'t find class %sTable. Check whether you annotated your model with @Table. If you haven\'t rebuilt your project after putting annotations - do it now and try again.
+    </string>
+
+    <string name="downgrade">
+        Can\'t downgrade database from version %1$d to %2$d. Consider implementing method getOnDowngradeListener of interface WellConfig
+    </string>
+
+    <string name="classes_not_found">
+        Generated classes not found. Try to rebuild your project or check whether you whether you forgot to annotate your model classes with @Table.
+    </string>
+</resources>

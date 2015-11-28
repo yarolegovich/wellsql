@@ -1,0 +1,1 @@
+include ':wellsql', ':well-processor', ':well-annotations', ':well-sample'
