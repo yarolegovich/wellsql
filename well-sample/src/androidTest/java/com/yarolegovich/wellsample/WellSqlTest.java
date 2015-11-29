@@ -7,7 +7,9 @@ import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.wellsql.generated.GeneratedLookup;
 import com.wellsql.generated.SuperHeroTable;
+import com.wellsql.generated.VillainTable;
 import com.yarolegovich.wellsql.SelectQuery;
 import com.yarolegovich.wellsql.WellSql;
 import com.yarolegovich.wellsql.mapper.InsertMapper;
@@ -39,13 +41,15 @@ public class WellSqlTest {
     @Before
     public void clearDb() {
         WellSql.delete(SuperHero.class).execute();
+        WellSql.delete(Villain.class).execute();
     }
 
     @Test
     public void idSetAfterInsert() {
+        WellSql.autoincrementFor(SuperHero.class).reset();
         SuperHero hero = getHeroes().get(0);
         WellSql.insert(hero).execute();
-        assertTrue(hero.getId() == 1);
+        assertEquals(1, hero.getId());
     }
 
     @Test
@@ -160,6 +164,13 @@ public class WellSqlTest {
         assertEquals(3, found.size());
     }
 
+    @Test
+    public void insertIdNoAutoincrementWorks() {
+        WellSql.insert(getVillains()).execute();
+        List<Villain> villains = WellSql.select(Villain.class).getAsModel();
+        assertEquals(getVillains().get(0).getId(), villains.get(0).getId());
+    }
+
     private List<SuperHero> getHeroes() {
         return Arrays.asList(
                 new SuperHero("Hank Pym", 1),
@@ -171,6 +182,14 @@ public class WellSqlTest {
                 new SuperHero("Jake Wharton", 7),
                 new SuperHero("Groot", 2),
                 new SuperHero("Nick Fury", 4)
+        );
+    }
+
+    private List<Villain> getVillains() {
+        return Arrays.asList(
+                new Villain(12, "Electro", 133),
+                new Villain(1488, "Red Scull", 1214),
+                new Villain(95, "Sandman", 241)
         );
     }
 }

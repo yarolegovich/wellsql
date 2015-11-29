@@ -28,6 +28,9 @@ public class ColumnAnnotatedField {
     private String fieldName;
     private String fieldClass;
 
+    private boolean isPrimaryKey;
+    private boolean isAutoincrement;
+
     public ColumnAnnotatedField(Element element, Column annotation) throws TableCreationException{
 
         String userDefinedName = annotation.name();
@@ -80,9 +83,10 @@ public class ColumnAnnotatedField {
     private String interpret(AnnotationMirror mirror) throws TableCreationException {
         String simpleName = mirror.getAnnotationType().asElement().getSimpleName().toString();
         if (simpleName.equals(PrimaryKey.class.getSimpleName())) {
-            boolean autoincrement = Utils.extractValue(mirror, "autoincrement", Boolean.class);
+            isPrimaryKey = true;
+            isAutoincrement = Utils.extractValue(mirror, "autoincrement", Boolean.class);
             columnName = "_" + columnName.toLowerCase();
-            return " PRIMARY KEY" + (autoincrement ? " AUTOINCREMENT" : "");
+            return " PRIMARY KEY" + (isAutoincrement ? " AUTOINCREMENT" : "");
         } else if (simpleName.equals(NotNull.class.getSimpleName())) {
             return " NOT NULL";
         } else if (simpleName.equals(Unique.class.getSimpleName())) {
@@ -94,6 +98,14 @@ public class ColumnAnnotatedField {
         } else {
             return "";
         }
+    }
+
+    public boolean isPrimaryKey() {
+        return isPrimaryKey;
+    }
+
+    public boolean isAutoincrement() {
+        return isAutoincrement;
     }
 
     public String getFieldName() {

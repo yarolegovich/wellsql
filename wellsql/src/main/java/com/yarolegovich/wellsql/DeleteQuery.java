@@ -42,6 +42,14 @@ public class DeleteQuery<T extends Identifiable> implements ConditionClauseConsu
         }
     }
 
+    public void whereId(int id) {
+        try {
+            mDb.delete(mTableName, WHERE_ID, new String[] { String.valueOf(id) });
+        } finally {
+            mDb.close();
+        }
+    }
+
     public void whereId(T item) {
         try {
             mDb.delete(mTableName, WHERE_ID, new String[] { String.valueOf(item.getId()) });

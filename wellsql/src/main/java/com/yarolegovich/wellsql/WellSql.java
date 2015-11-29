@@ -77,6 +77,10 @@ public class WellSql extends SQLiteOpenHelper {
         return new UpdateQuery<>(sInstance.getWritableDatabase(), token);
     }
 
+    public static <T extends Identifiable>ResetAutoincrementQuery autoincrementFor(Class<T> token) {
+        return new ResetAutoincrementQuery(sInstance.getWritableDatabase(), tableFor(token).getTableName());
+    }
+
     public static SQLiteDatabase giveMeReadableDb() {
         return sInstance.getReadableDatabase();
     }

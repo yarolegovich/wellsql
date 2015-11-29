@@ -19,6 +19,7 @@ public class WellConfig extends DefaultWellConfig {
     @Override
     public void onCreate(SQLiteDatabase db, WellTableManager helper) {
         helper.createTable(SuperHero.class);
+        helper.createTable(Villain.class);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class WellConfig extends DefaultWellConfig {
 
     @Override
     public int getDbVersion() {
-        return 2;
+        return 3;
     }
 
     @Override

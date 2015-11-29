@@ -46,6 +46,15 @@ public class TableAnnotatedClass {
         }
     }
 
+    public boolean isAutoincrement() {
+        for (ColumnAnnotatedField column : columns) {
+            if (column.isPrimaryKey()) {
+                return column.isAutoincrement();
+            }
+        }
+        return false;
+    }
+
     public String getTableName() {
         return tableName;
     }

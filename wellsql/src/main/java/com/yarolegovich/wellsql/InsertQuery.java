@@ -57,7 +57,7 @@ public class InsertQuery<T extends Identifiable> {
             for (T item : mToInsert) {
                 ContentValues cv = mMapper.toCv(item);
                 //We do this not to violate UNIQUE constraint of @PrimaryKey, when using generated mapper
-                if (cv.containsKey("_id")) {
+                if (mTable.shouldAutoincrementId()) {
                     cv.remove("_id");
                 }
                 int index = (int) mDb.insert(mTable.getTableName(), null, cv);

@@ -6,5 +6,6 @@ package com.yarolegovich.wellsql.core;
 public interface TableClass {
     String createStatement();
     String getTableName();
+    boolean shouldAutoincrementId();
     Class<?> getModelClass();
 }

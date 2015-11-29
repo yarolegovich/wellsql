@@ -134,10 +134,15 @@ public class TableProcessor extends AbstractProcessor {
                 .returns(CodeGenUtils.wildcard(Class.class))
                 .addStatement("return $T.class", model)
                 .build();
+        MethodSpec isAutoincrement = CodeGenUtils.interfaceMethod("shouldAutoincrementId")
+                .returns(boolean.class)
+                .addStatement("return " + table.isAutoincrement())
+                .build();
 
         tableClassBuilder.addMethod(createStatement)
                 .addMethod(tableName)
-                .addMethod(modelClass);
+                .addMethod(modelClass)
+                .addMethod(isAutoincrement);
 
         for (ColumnAnnotatedField column : table.columns()) {
             tableClassBuilder.addField(columnToStaticConstant(column));

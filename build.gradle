@@ -22,8 +22,8 @@ task clean(type: Delete) {
 ext {
     userOrg = 'yarolegovich'
     groupId = 'com.yarolegovich'
-    uploadName = 'WellSql'
+    uploadName = 'wellsql'
     description = 'Library that simplifies work with SQLite in Android'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     licences = ['MIT']
 }
