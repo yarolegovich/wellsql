@@ -159,5 +159,6 @@ SQLiteDatabase db = WellSql.giveMeReadableDb();
 
 SQLiteDatabase db = WellSql.giveMeWritableDb();
 ```
+For more usage examples you can see tests of well-sample, but I think nothing extraordinary in api :)
 ##Licence
 MIT licence, I don't really care. 
