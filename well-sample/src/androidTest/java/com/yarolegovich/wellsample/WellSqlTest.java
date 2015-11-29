@@ -7,9 +7,7 @@ import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.wellsql.generated.GeneratedLookup;
 import com.wellsql.generated.SuperHeroTable;
-import com.wellsql.generated.VillainTable;
 import com.yarolegovich.wellsql.SelectQuery;
 import com.yarolegovich.wellsql.WellSql;
 import com.yarolegovich.wellsql.mapper.InsertMapper;

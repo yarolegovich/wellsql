@@ -35,6 +35,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -80,7 +81,7 @@ public class TableProcessor extends AbstractProcessor {
                 .addStatement("$N = new $T()", tableMap, concreteTables)
                 .addStatement("$N = new $T()", mapperMap, concreteMappers);
 
-        boolean generatedTables = false;
+        boolean generated = false;
         for (Element tableElement : roundEnv.getElementsAnnotatedWith(Table.class)) {
             if (tableElement.getKind() != ElementKind.CLASS) {
                 error(tableElement, "Only classes can be annotated with @Table");
@@ -89,25 +90,30 @@ public class TableProcessor extends AbstractProcessor {
 
             try {
                 TableAnnotatedClass table = new TableAnnotatedClass(tableElement);
-
-                String tableName = createTable(tableElement, table);
-                String mapperName = createMapper(tableElement, table);
-
                 TypeName token = ClassName.get(tableElement.asType());
 
-                constructorBuilder.addStatement(CodeGenUtils.putForToken(tableName),
-                        tableMap, token);
-                constructorBuilder.addStatement(CodeGenUtils.putForToken(mapperName),
-                        mapperMap, token);
+                Table annotation = tableElement.getAnnotation(Table.class);
 
-                generatedTables = true;
+                if (annotation.generateTable()) {
+                    String tableName = createTable(tableElement, table);
+                    constructorBuilder.addStatement(CodeGenUtils.putForToken(tableName),
+                            tableMap, token);
+                    generated = true;
+                }
+
+                if (annotation.generateMapper()) {
+                    String mapperName = createMapper(tableElement, table);
+                    constructorBuilder.addStatement(CodeGenUtils.putForToken(mapperName),
+                            mapperMap, token);
+                    generated = true;
+                }
             } catch (TableCreationException e) {
                 error(tableElement, "Can't create table class: " + e.getMessage());
             }
 
         }
 
-        if (generatedTables) {
+        if (generated) {
             generateLookup(constructorBuilder.build(), tableMap, mapperMap);
         }
 

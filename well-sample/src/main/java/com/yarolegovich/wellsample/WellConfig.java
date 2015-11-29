@@ -3,6 +3,7 @@ package com.yarolegovich.wellsample;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.wellsql.generated.GeneratedLookup;
 import com.yarolegovich.wellsql.DefaultWellConfig;
 import com.yarolegovich.wellsql.WellSql;
 import com.yarolegovich.wellsql.WellTableManager;
