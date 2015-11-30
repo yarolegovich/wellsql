@@ -26,7 +26,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
   compile 'com.yarolegovich:wellsql:1.0.3'
-  apt 'com.yarolegovich:wellsql-processor:1.0.3'
+  apt 'com.yarolegovich:wellsql-processor:1.0.2'
 }
 
 ```
