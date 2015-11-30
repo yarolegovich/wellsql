@@ -7,11 +7,16 @@ import com.yarolegovich.wellsql.core.Identifiable;
 import com.yarolegovich.wellsql.mapper.InsertMapper;
 import com.yarolegovich.wellsql.mapper.SQLiteMapper;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by yarolegovich on 26.11.2015.
  */
 @SuppressWarnings("unchecked")
 public class UpdateQuery<T extends Identifiable> implements ConditionClauseConsumer {
+
+    private final String WHERE_ID = "id = ?";
 
     private SQLiteDatabase mDb;
 
@@ -21,9 +26,12 @@ public class UpdateQuery<T extends Identifiable> implements ConditionClauseConsu
     private String mSelection;
     private String[] mSelectionArgs;
 
+    private SQLiteMapper<T> mMapper;
+
     UpdateQuery(SQLiteDatabase db, Class<T> token) {
         mDb = db;
         mTableName = WellSql.tableFor(token).getTableName();
+        mMapper = WellSql.mapperFor(token);
     }
 
     public ConditionClauseBuilder<UpdateQuery<T>> where() {
@@ -31,14 +39,31 @@ public class UpdateQuery<T extends Identifiable> implements ConditionClauseConsu
     }
 
     public UpdateQuery<T> whereId(int id) {
-        mSelection = "_id = ?";
+        mSelection = WHERE_ID;
         mSelectionArgs = new String[]{String.valueOf(id)};
         return this;
     }
 
+    public void replaceWhereId(T item) {
+        replaceWhereId(Collections.singletonList(item));
+    }
+
+    public void replaceWhereId(List<T> items) {
+        mSelection = WHERE_ID;
+        try {
+            String[] args = new String[1];
+            for (T item : items) {
+                args[0] = String.valueOf(item.getId());
+                ContentValues cv = mMapper.toCv(item);
+                mDb.update(mTableName, cv, mSelection, args);
+            }
+        } finally {
+            mDb.close();
+        }
+    }
+
     public UpdateQuery<T> put(T item) {
-        SQLiteMapper<T> mapper = (SQLiteMapper<T>) WellSql.mapperFor(item.getClass());
-        mContentValues = mapper.toCv(item);
+        mContentValues = mMapper.toCv(item);
         return this;
     }
 
