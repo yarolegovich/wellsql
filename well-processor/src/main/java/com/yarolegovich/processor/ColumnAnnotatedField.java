@@ -7,6 +7,7 @@ import com.yarolegovich.wellsql.core.annotation.NotNull;
 import com.yarolegovich.wellsql.core.annotation.PrimaryKey;
 import com.yarolegovich.wellsql.core.annotation.Unique;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class ColumnAnnotatedField {
                 String.valueOf(Character.toLowerCase(fieldName.charAt(1))));
 
         columnName = userDefinedName.equals("") ?
-                fieldName.toUpperCase() :
+                fieldName.replaceAll("(?<=[a-z])(?=[A-Z])", "_").toUpperCase() :
                 userDefinedName;
 
         String type = element.asType().toString();
@@ -69,6 +70,10 @@ public class ColumnAnnotatedField {
                 (columnConstraints != null ?
                         columnConstraints.trim() :
                         null));
+    }
+
+    public boolean isDate() {
+        return fieldClass.equals(Date.class.getCanonicalName());
     }
 
     private String inferFieldType(String className) throws TableCreationException {
@@ -140,6 +145,7 @@ public class ColumnAnnotatedField {
         typeMapping.put(float.class.getCanonicalName(), ColumnType.REAL);
 
         typeMapping.put(String.class.getCanonicalName(), ColumnType.TEXT);
+        typeMapping.put(Date.class.getCanonicalName(), ColumnType.TEXT);
 
         typeMapping.put(byte[].class.getCanonicalName(), ColumnType.BLOB);
 

@@ -7,6 +7,9 @@ import com.wellsql.generated.GeneratedLookup;
 import com.yarolegovich.wellsql.DefaultWellConfig;
 import com.yarolegovich.wellsql.WellSql;
 import com.yarolegovich.wellsql.WellTableManager;
+import com.yarolegovich.wellsql.mapper.SQLiteMapper;
+
+import java.util.Map;
 
 /**
  * Created by yarolegovich on 26.11.2015.
@@ -26,7 +29,18 @@ public class WellConfig extends DefaultWellConfig {
     @Override
     public void onUpgrade(SQLiteDatabase db, WellTableManager helper, int newVersion, int oldVersion) {
         helper.dropTable(SuperHero.class);
+        helper.dropTable(Villain.class);
         onCreate(db, helper);
+    }
+
+    /*
+     * Here you can map classes to custom mappers. If you register here a mapper for class that already
+     * has generated mapper - WellSql will use your mapper, but not generated.
+     * No need to call super.registerMappers()
+     */
+    @Override
+    protected Map<Class<?>, SQLiteMapper<?>> registerMappers() {
+        return super.registerMappers();
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import com.yarolegovich.wellsql.core.Mapper;
 import com.yarolegovich.wellsql.core.TableLookup;
 import com.yarolegovich.wellsql.core.annotation.Check;
@@ -23,8 +24,11 @@ import com.yarolegovich.wellsql.core.annotation.Unique;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -178,6 +182,16 @@ public class TableProcessor extends AbstractProcessor {
                 .addSuperinterface(ParameterizedTypeName.get(ClassName.get(Mapper.class),
                         TypeName.get(tableElement.asType())));
 
+        String formatter = "formatter";
+        if (table.hasDate()) {
+            TypeName dateFormat = ClassName.get(SimpleDateFormat.class);
+            TypeName locale = ClassName.get(Locale.class);
+            FieldSpec fField = FieldSpec.builder(dateFormat, formatter, Modifier.PRIVATE)
+                    .initializer("new $T($S,$T.getDefault())", dateFormat, "yyyy-MM-dd", locale)
+                    .build();
+            mapperClassBuilder.addField(fField);
+        }
+
 
         TypeName map = ParameterizedTypeName.get(Map.class, String.class, Object.class);
         MethodSpec.Builder toCvBuilder = CodeGenUtils.interfaceMethod("toContentValues")
@@ -191,14 +205,21 @@ public class TableProcessor extends AbstractProcessor {
                 .returns(tableType);
 
         for (ColumnAnnotatedField column : table.columns()) {
-            toCvBuilder.addStatement("cv.put($S, item."
-                    + CodeGenUtils.toGetter(column.getFieldName())
-                    + "())", column.getName());
+            String toCvStatement = "cv.put($S, ";
+            String convertStatement = "item." + CodeGenUtils.toSetter(column.getFieldName()) + "(";
+            String getter = CodeGenUtils.toGetter(column.getFieldName()) + "()";
 
-            convertBuilder.addStatement("item."
-                    + CodeGenUtils.toSetter(column.getFieldName())
-                    + "((" + column.getClassName()
-                    + ") cv.get($S))", column.getName());
+            if (!column.isDate()) {
+                toCvStatement += "item." + getter + ")";
+                convertStatement += "(" + column.getClassName() + ") cv.get($S))";
+            } else {
+                toCvStatement += formatter + ".format(item." + getter + "))";
+                convertStatement = "try { " + convertStatement + "(" + Date.class.getCanonicalName() +
+                        ") " + formatter + ".parse((String) cv.get($S))); } catch(Exception e) { }";
+            }
+
+            toCvBuilder.addStatement(toCvStatement, column.getName());
+            convertBuilder.addStatement(convertStatement, column.getName());
         }
 
         toCvBuilder.addStatement("return cv");
@@ -268,7 +289,6 @@ public class TableProcessor extends AbstractProcessor {
     public FieldSpec columnToStaticConstant(ColumnAnnotatedField column) {
         String name = column.getName()
                 .replaceAll("^_", "")
-                .replaceAll("(?<=[a-z])(?=[A-Z])", "_")
                 .toUpperCase();
         return FieldSpec.builder(String.class, name)
                 .addModifiers(Modifier.STATIC, Modifier.FINAL, Modifier.PUBLIC)

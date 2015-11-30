@@ -4,6 +4,7 @@ import com.yarolegovich.wellsql.core.Identifiable;
 import com.yarolegovich.wellsql.core.annotation.Check;
 import com.yarolegovich.wellsql.core.annotation.Column;
 import com.yarolegovich.wellsql.core.annotation.PrimaryKey;
+import com.yarolegovich.wellsql.core.annotation.RawConstraints;
 import com.yarolegovich.wellsql.core.annotation.Table;
 import com.yarolegovich.wellsql.core.annotation.Unique;
 
@@ -12,6 +13,7 @@ import com.yarolegovich.wellsql.core.annotation.Unique;
  */
 
 @Table
+@RawConstraints({"UNIQUE (NAME, fought)"})
 public class SuperHero implements Identifiable {
 
     @Column

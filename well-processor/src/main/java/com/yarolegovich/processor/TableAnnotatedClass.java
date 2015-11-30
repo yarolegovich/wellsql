@@ -55,6 +55,15 @@ public class TableAnnotatedClass {
         return false;
     }
 
+    public boolean hasDate() {
+        for (ColumnAnnotatedField column : columns) {
+            if (column.isDate()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getTableName() {
         return tableName;
     }

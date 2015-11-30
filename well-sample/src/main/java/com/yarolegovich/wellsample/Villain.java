@@ -6,6 +6,8 @@ import com.yarolegovich.wellsql.core.annotation.PrimaryKey;
 import com.yarolegovich.wellsql.core.annotation.Table;
 import com.yarolegovich.wellsql.core.annotation.Unique;
 
+import java.util.Date;
+
 /**
  * Created by yarolegovich on 29.11.2015.
  */
@@ -19,6 +21,8 @@ public class Villain implements Identifiable {
     private String name;
     @Column
     private int evilDeeds;
+    @Column
+    private Date birthDay;
 
     public Villain() { }
 
@@ -50,5 +54,13 @@ public class Villain implements Identifiable {
 
     public void setEvilDeeds(int evilDeeds) {
         this.evilDeeds = evilDeeds;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
     }
 }

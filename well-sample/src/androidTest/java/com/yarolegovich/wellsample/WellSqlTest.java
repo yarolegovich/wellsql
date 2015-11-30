@@ -3,6 +3,7 @@ package com.yarolegovich.wellsample;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -79,7 +80,7 @@ public class WellSqlTest {
 
     @Test
     public void limitWorks() {
-        WellSql.insert(getHeroes()).execute();
+        WellSql.insert(getHeroes()).asSingleTransaction(true).execute();
         List<SuperHero> heroes = WellSql.select(SuperHero.class).limit(1).getAsModel();
         assertEquals(1, heroes.size());
     }
@@ -112,10 +113,11 @@ public class WellSqlTest {
     public void complexSelectsWork() {
         WellSql.insert(getHeroes()).execute();
         List<SuperHero> heroes = WellSql.select(SuperHero.class)
-                .where().greaterThenOrEqual(SuperHeroTable.FOUGHT, 12).or()
+                .where().greaterThen(SuperHeroTable.FOUGHT, 12)
                 .beginGroup().equals(SuperHeroTable.NAME, "Groot").or()
                 .equals(SuperHeroTable.NAME, "Rocket Raccoon").endGroup().endWhere()
                 .orderBy(SelectQuery.ORDER_DESCENDING, SuperHeroTable.FOUGHT)
+                .limit(12)
                 .getAsModel();
 
         assertEquals(4, heroes.size());
