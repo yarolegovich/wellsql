@@ -16,7 +16,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class UpdateQuery<T extends Identifiable> implements ConditionClauseConsumer {
 
-    private final String WHERE_ID = "id = ?";
+    private final String WHERE_ID = "_id = ?";
 
     private SQLiteDatabase mDb;
 
