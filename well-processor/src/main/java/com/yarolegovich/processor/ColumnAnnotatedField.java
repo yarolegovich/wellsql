@@ -118,14 +118,11 @@ public class ColumnAnnotatedField {
     }
 
     public String getClassName() {
-        return primitiveWrappers.containsKey(fieldClass) ?
-                primitiveWrappers.get(fieldClass) : fieldClass;
+        return fieldClass;
     }
 
-    private static Map<String, String> primitiveWrappers;
     private static Map<String, String> typeMapping;
     static {
-        primitiveWrappers = new HashMap<>();
         typeMapping = new HashMap<>();
 
         typeMapping.put(Integer.class.getCanonicalName(), ColumnType.INTEGER);
@@ -148,8 +145,5 @@ public class ColumnAnnotatedField {
         typeMapping.put(Date.class.getCanonicalName(), ColumnType.TEXT);
 
         typeMapping.put(byte[].class.getCanonicalName(), ColumnType.BLOB);
-
-        primitiveWrappers.put(int.class.getSimpleName(), Integer.class.getSimpleName());
-
     }
 }

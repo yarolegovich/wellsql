@@ -3,7 +3,6 @@ package com.yarolegovich.wellsample;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.wellsql.generated.VillainTable;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -8,6 +8,8 @@ import com.yarolegovich.wellsql.core.annotation.RawConstraints;
 import com.yarolegovich.wellsql.core.annotation.Table;
 import com.yarolegovich.wellsql.core.annotation.Unique;
 
+import java.util.Date;
+
 /**
  * Created by yarolegovich on 27.11.2015.
  */
@@ -26,6 +28,53 @@ public class SuperHero implements Identifiable {
     @Column(name = "fought")
     @Check("fought >= 0")
     private int mFoughtVillains;
+
+    @Column private short shortField;
+    @Column private long longField;
+    @Column private Long longerField;
+    @Column private byte shorterField;
+    @Column private Date birthday;
+    @Column private boolean isTrueEvil;
+
+    public short getShortField() {
+        return shortField;
+    }
+
+    public void setShortField(short shortField) {
+        this.shortField = shortField;
+    }
+
+    public long getLongField() {
+        return longField;
+    }
+
+    public void setLongField(long longField) {
+        this.longField = longField;
+    }
+
+    public Long getLongerField() {
+        return longerField;
+    }
+
+    public void setLongerField(Long longerField) {
+        this.longerField = longerField;
+    }
+
+    public byte getShorterField() {
+        return shorterField;
+    }
+
+    public void setShorterField(byte shorterField) {
+        this.shorterField = shorterField;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
 
     public SuperHero() { }
 
@@ -58,5 +107,13 @@ public class SuperHero implements Identifiable {
 
     public void setFoughtVillains(int foughtVillains) {
         mFoughtVillains = foughtVillains;
+    }
+
+    public boolean isTrueEvil() {
+        return isTrueEvil;
+    }
+
+    public void setIsTrueEvil(boolean isTrueEvil) {
+        this.isTrueEvil = isTrueEvil;
     }
 }

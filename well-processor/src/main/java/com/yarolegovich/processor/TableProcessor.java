@@ -1,5 +1,6 @@
 package com.yarolegovich.processor;
 
+
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -10,7 +11,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import com.yarolegovich.wellsql.core.Mapper;
 import com.yarolegovich.wellsql.core.TableLookup;
 import com.yarolegovich.wellsql.core.annotation.Check;
@@ -182,16 +182,14 @@ public class TableProcessor extends AbstractProcessor {
                 .addSuperinterface(ParameterizedTypeName.get(ClassName.get(Mapper.class),
                         TypeName.get(tableElement.asType())));
 
-        String formatter = "formatter";
         if (table.hasDate()) {
             TypeName dateFormat = ClassName.get(SimpleDateFormat.class);
             TypeName locale = ClassName.get(Locale.class);
-            FieldSpec fField = FieldSpec.builder(dateFormat, formatter, Modifier.PRIVATE)
+            FieldSpec fField = FieldSpec.builder(dateFormat, CodeGenUtils.FORMATTER, Modifier.PRIVATE)
                     .initializer("new $T($S,$T.getDefault())", dateFormat, "yyyy-MM-dd", locale)
                     .build();
             mapperClassBuilder.addField(fField);
         }
-
 
         TypeName map = ParameterizedTypeName.get(Map.class, String.class, Object.class);
         MethodSpec.Builder toCvBuilder = CodeGenUtils.interfaceMethod("toContentValues")
@@ -205,21 +203,8 @@ public class TableProcessor extends AbstractProcessor {
                 .returns(tableType);
 
         for (ColumnAnnotatedField column : table.columns()) {
-            String toCvStatement = "cv.put($S, ";
-            String convertStatement = "item." + CodeGenUtils.toSetter(column.getFieldName()) + "(";
-            String getter = CodeGenUtils.toGetter(column.getFieldName()) + "()";
-
-            if (!column.isDate()) {
-                toCvStatement += "item." + getter + ")";
-                convertStatement += "(" + column.getClassName() + ") cv.get($S))";
-            } else {
-                toCvStatement += formatter + ".format(item." + getter + "))";
-                convertStatement = "try { " + convertStatement + "(" + Date.class.getCanonicalName() +
-                        ") " + formatter + ".parse((String) cv.get($S))); } catch(Exception e) { }";
-            }
-
-            toCvBuilder.addStatement(toCvStatement, column.getName());
-            convertBuilder.addStatement(convertStatement, column.getName());
+            toCvBuilder.addStatement(CodeGenUtils.toCvStatement(column), column.getName());
+            convertBuilder.addStatement(CodeGenUtils.toConvertStatement(column), column.getName());
         }
 
         toCvBuilder.addStatement("return cv");

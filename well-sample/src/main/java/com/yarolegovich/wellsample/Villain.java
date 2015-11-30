@@ -23,6 +23,16 @@ public class Villain implements Identifiable {
     private int evilDeeds;
     @Column
     private Date birthDay;
+    @Column
+    private boolean isEvil = true;
+
+    public boolean isEvil() {
+        return isEvil;
+    }
+
+    public void setIsEvil(boolean isEvil) {
+        this.isEvil = isEvil;
+    }
 
     public Villain() { }
 
