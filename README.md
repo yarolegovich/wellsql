@@ -25,8 +25,8 @@ In build.gradle for your module add
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-  compile 'com.yarolegovich:wellsql:1.0.1'
-  apt 'com.yarolegovich:wellsql-processor:1.0.1'
+  compile 'com.yarolegovich:wellsql:1.0.2'
+  apt 'com.yarolegovich:wellsql-processor:1.0.2'
 }
 
 ```
