@@ -29,11 +29,14 @@ public class SuperHero implements Identifiable {
     @Check("fought >= 0")
     private int mFoughtVillains;
 
+    /*
+     * This values are to check that mapper is generated correctly for this data types
+     */
     @Column private short shortField;
     @Column private long longField;
     @Column private Long longerField;
     @Column private byte shorterField;
-    @Column private Date birthday;
+    @Column private Date birthday = new Date(System.currentTimeMillis());
     @Column private boolean isTrueEvil;
 
     public short getShortField() {

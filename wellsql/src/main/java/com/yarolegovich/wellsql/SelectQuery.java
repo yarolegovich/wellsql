@@ -158,6 +158,14 @@ public class SelectQuery<T extends Identifiable> implements ConditionClauseConsu
         }
     }
 
+    public WellCursor<T> getAsCursor() {
+        return getAsCursor(WellSql.mapperFor(mModel));
+    }
+
+    public WellCursor<T> getAsCursor(SelectMapper<T> mapper) {
+        return new WellCursor<>(mDb, mapper, execute());
+    }
+
     public void getAsModelAsync(final Callback<List<T>> callback) {
         sExecutor.execute(new Runnable() {
             @Override

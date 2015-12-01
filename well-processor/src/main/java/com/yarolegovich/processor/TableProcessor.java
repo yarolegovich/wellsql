@@ -23,9 +23,7 @@ import com.yarolegovich.wellsql.core.TableClass;
 import com.yarolegovich.wellsql.core.annotation.Unique;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -39,17 +37,11 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-
-import javafx.util.Pair;
 
 @AutoService(Processor.class)
 public class TableProcessor extends AbstractProcessor {
@@ -203,8 +195,18 @@ public class TableProcessor extends AbstractProcessor {
                 .returns(tableType);
 
         for (ColumnAnnotatedField column : table.columns()) {
+
+            if (column.isDate()) {
+                toCvBuilder.beginControlFlow("if (" + CodeGenUtils.extractValue(column, false) + " != null)");
+            }
             toCvBuilder.addStatement(CodeGenUtils.toCvStatement(column), column.getName());
+            if (column.isDate()) {
+                toCvBuilder.endControlFlow();
+            }
+
+            convertBuilder.beginControlFlow(CodeGenUtils.cvGetNotNull(), column.getName());
             convertBuilder.addStatement(CodeGenUtils.toConvertStatement(column), column.getName());
+            convertBuilder.endControlFlow();
         }
 
         toCvBuilder.addStatement("return cv");

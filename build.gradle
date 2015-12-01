@@ -24,6 +24,6 @@ ext {
     groupId = 'com.yarolegovich'
     uploadName = 'wellsql'
     description = 'Library that simplifies work with SQLite in Android'
-    publishVersion = '1.0.4'
+    publishVersion = '1.0.5'
     licences = ['MIT']
 }

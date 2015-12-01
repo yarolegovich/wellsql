@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DeleteQuery<T extends Identifiable> implements ConditionClauseConsumer{
 
-    private final String WHERE_ID = "id = ?";
+    private final String WHERE_ID = "_id = ?";
 
     private String mTableName;
     private String mSelection;

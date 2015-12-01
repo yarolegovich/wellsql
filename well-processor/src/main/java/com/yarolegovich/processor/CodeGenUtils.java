@@ -42,13 +42,13 @@ public class CodeGenUtils {
         return "$N.put($T.class, new " + type + "())";
     }
 
-    private static String toGetter(String fieldName) {
+    public static String toGetter(String fieldName) {
         return (!fieldName.startsWith("is") ? "get" +
                 Character.toUpperCase(fieldName.charAt(0)) +
                 fieldName.substring(1) : fieldName);
     }
 
-    private static String toSetter(String fieldName) {
+    public static String toSetter(String fieldName) {
         return "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
     }
 
@@ -58,12 +58,21 @@ public class CodeGenUtils {
 
     public static String toConvertStatement(ColumnAnnotatedField column) {
         String setter = "item." + toSetter(column.getFieldName()) + "(" + casts.get(column.getClassName()) + ")";
-        return !column.isDate() ? setter : "try { " + setter + "; } catch (Exception e) { /* NOP */ }";
+        return !column.isDate() ? setter :
+                "try { " + setter + "; } catch (Exception e) { throw new RuntimeException(\"Only format 'yyyy-MM-dd' is supported, conversion failed\"); }";
+    }
+
+    public static String extractValue(ColumnAnnotatedField column, boolean formatIfDate) {
+        String getter = "item." + toGetter(column.getFieldName()) + "()";
+        return !(column.isDate() && formatIfDate) ? getter : FORMATTER + ".format(" + getter + ")";
     }
 
     public static String extractValue(ColumnAnnotatedField column) {
-        String getter = "item." + toGetter(column.getFieldName()) + "()";
-        return !column.isDate() ? getter : FORMATTER + ".format(" + getter + ")";
+        return extractValue(column, true);
+    }
+
+    public static String cvGetNotNull() {
+        return "if (cv.get($S) != null)";
     }
 
     private static final Map<String, String> casts;

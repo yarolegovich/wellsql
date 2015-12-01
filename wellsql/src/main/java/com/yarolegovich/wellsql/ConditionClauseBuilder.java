@@ -131,6 +131,7 @@ public class ConditionClauseBuilder<T extends ConditionClauseConsumer> {
     }
 
     public ConditionClauseBuilder<T> beginGroup() {
+        check();
         mSelectionBuilder.append('(');
         return this;
     }
@@ -163,9 +164,8 @@ public class ConditionClauseBuilder<T extends ConditionClauseConsumer> {
         if (mSelectionBuilder.length() == 0) {
             return;
         }
-        char[] lastChar = new char[1];
-        mSelectionBuilder.getChars(mSelectionBuilder.length() - 1, mSelectionBuilder.length(), lastChar, 0);
-        if (lastChar[0] == '(' || lastChar[0] == ' ') {
+        char lastChar = mSelectionBuilder.charAt(mSelectionBuilder.length() - 1);
+        if (lastChar == '(' || lastChar == ' ') {
             return;
         }
         mSelectionBuilder.append(" AND ");
