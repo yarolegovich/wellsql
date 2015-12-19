@@ -3,9 +3,7 @@ package com.yarolegovich.wellsql;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yarolegovich.wellsql.core.Identifiable;
-import com.yarolegovich.wellsql.core.TableClass;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
@@ -30,37 +28,39 @@ public class DeleteQuery<T extends Identifiable> implements ConditionClauseConsu
         return new ConditionClauseBuilder<>(this);
     }
 
-    public void whereId(List<T> items) {
+    public int whereId(List<T> items) {
+        int rowsAffected = 0;
         try {
             String[] arg = new String[1];
             for (T item : items) {
                 arg[0] = String.valueOf(item.getId());
-                mDb.delete(mTableName, WHERE_ID, arg);
+                rowsAffected += mDb.delete(mTableName, WHERE_ID, arg);
             }
         } finally {
             mDb.close();
         }
+        return rowsAffected;
     }
 
-    public void whereId(int id) {
+    public int whereId(int id) {
         try {
-            mDb.delete(mTableName, WHERE_ID, new String[] { String.valueOf(id) });
+            return mDb.delete(mTableName, WHERE_ID, new String[] { String.valueOf(id) });
         } finally {
             mDb.close();
         }
     }
 
-    public void whereId(T item) {
+    public int whereId(T item) {
         try {
-            mDb.delete(mTableName, WHERE_ID, new String[] { String.valueOf(item.getId()) });
+            return mDb.delete(mTableName, WHERE_ID, new String[] { String.valueOf(item.getId()) });
         } finally {
             mDb.close();
         }
     }
 
-    public void execute() {
+    public int execute() {
         try {
-            mDb.delete(mTableName, mSelection, mArgs);
+            return mDb.delete(mTableName, mSelection, mArgs);
         } finally {
             mDb.close();
         }
