@@ -3,12 +3,10 @@ package com.yarolegovich.wellsample;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-//
-//import com.wellsql.generated.SuperHeroTable;
+
 import com.wellsql.generated.SuperHeroTable;
 import com.yarolegovich.wellsql.SelectQuery;
 import com.yarolegovich.wellsql.WellCursor;
@@ -58,7 +56,8 @@ public class WellSqlTest {
         SuperHero hero = getHeroes().get(0);
         WellSql.insert(hero).execute();
         hero.setFoughtVillains(4);
-        WellSql.update(SuperHero.class).whereId(hero.getId()).put(hero).execute();
+        int rowsUpdated = WellSql.update(SuperHero.class).whereId(hero.getId()).put(hero).execute();
+        assertEquals(rowsUpdated, 1);
         hero = WellSql.select(SuperHero.class)
                 .where().equals(SuperHeroTable.NAME, hero.getName()).endWhere()
                 .getAsModel(new SelectMapper<SuperHero>() {
@@ -70,6 +69,14 @@ public class WellSqlTest {
                     }
                 }).get(0);
         assertEquals(4, hero.getFoughtVillains());
+    }
+
+    @Test
+    public void replaceAllWorks() {
+        List<SuperHero> heroes = getHeroes();
+        WellSql.insert(heroes).execute();
+        int rowsUpdated = WellSql.update(SuperHero.class).replaceWhereId(heroes);
+        assertEquals(heroes.size(), rowsUpdated);
     }
 
     @Test
@@ -104,9 +111,10 @@ public class WellSqlTest {
     public void conditionalDeleteWorks() {
         List<SuperHero> heroes = getHeroes();
         WellSql.insert(heroes).execute();
-        WellSql.delete(SuperHero.class).where()
+        int rowsDeleted = WellSql.delete(SuperHero.class).where()
                 .equals(SuperHeroTable.NAME, heroes.get(0).getName())
                 .endWhere().execute();
+        assertEquals(1, rowsDeleted);
         List<SuperHero> dbHeroes = WellSql.select(SuperHero.class).getAsModel();
         assertEquals(heroes.size() - 1, dbHeroes.size());
     }
@@ -140,7 +148,7 @@ public class WellSqlTest {
         List<SuperHero> heroes = getHeroes();
         WellSql.insert(heroes).execute();
         SuperHero iWantBeLikeHim = heroes.get(6);
-        WellSql.update(SuperHero.class).where()
+        int rowsUpdated = WellSql.update(SuperHero.class).where()
                 .equals(SuperHeroTable.NAME, iWantBeLikeHim.getName()).endWhere()
                 .put("yarolegovich", new InsertMapper<String>() {
                     @Override
@@ -150,6 +158,7 @@ public class WellSqlTest {
                         return cv;
                     }
                 }).execute();
+        assertEquals(1, rowsUpdated);
         List<SuperHero> updated = WellSql.select(SuperHero.class)
                 .where().contains(SuperHeroTable.NAME, "govich").endWhere()
                 .getAsModel();
