@@ -89,7 +89,7 @@ public class WellSql extends SQLiteOpenHelper {
         return sInstance.getWritableDatabase();
     }
 
-    static <T> SQLiteMapper<T> mapperFor(Class<T> token) {
+    public static <T> SQLiteMapper<T> mapperFor(Class<T> token) {
         SQLiteMapper<T> mapper = mDbConfig.getMapper(token);
         if (mapper == null) {
             throw new RuntimeException(mDbConfig.getContext()

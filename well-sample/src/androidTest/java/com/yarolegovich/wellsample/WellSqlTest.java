@@ -12,6 +12,7 @@ import com.yarolegovich.wellsql.SelectQuery;
 import com.yarolegovich.wellsql.WellCursor;
 import com.yarolegovich.wellsql.WellSql;
 import com.yarolegovich.wellsql.mapper.InsertMapper;
+import com.yarolegovich.wellsql.mapper.SQLiteMapper;
 import com.yarolegovich.wellsql.mapper.SelectMapper;
 
 import org.junit.Before;
@@ -194,6 +195,31 @@ public class WellSqlTest {
             counter++;
         }
         assertEquals(getHeroes().size(), counter);
+    }
+
+    @Test
+    public void updateIgnoreIdWorks() {
+        SuperHero hero = new SuperHero("Jean", 1);
+        WellSql.insert(hero).execute();
+
+        // SuperHero touches radioactive material, his name changes and he fights 41 villains.
+        SuperHero transformedHero = new SuperHero("Jeanne", 42);
+
+        // Replace the old entry, but keep his id
+        WellSql.update(SuperHero.class).whereId(hero.getId()).put(transformedHero, new InsertMapper<SuperHero>() {
+            @Override
+            public ContentValues toCv(SuperHero item) {
+                SQLiteMapper<SuperHero> mapper = WellSql.mapperFor(SuperHero.class);
+                ContentValues cv = mapper.toCv(item);
+                cv.remove(SuperHeroTable.ID);
+                return cv;
+            }
+        }).execute();
+
+        // Make sure update worked and id is the same
+        List<SuperHero> selectedHeroes = WellSql.select(SuperHero.class).getAsModel();
+        assertEquals("Jeanne", selectedHeroes.get(0).getName());
+        assertEquals(hero.getId(), selectedHeroes.get(0).getId());
     }
 
     private List<SuperHero> getHeroes() {
