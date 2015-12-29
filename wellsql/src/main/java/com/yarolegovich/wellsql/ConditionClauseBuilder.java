@@ -125,6 +125,10 @@ public class ConditionClauseBuilder<T extends ConditionClauseConsumer> {
         return this;
     }
 
+    public ConditionClauseBuilder<T> equals(String column, boolean value) {
+        return equals(column, value ? 1 : 0);
+    }
+
     public ConditionClauseBuilder<T> or() {
         mSelectionBuilder.append(" OR ");
         return this;
