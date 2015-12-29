@@ -222,6 +222,18 @@ public class WellSqlTest {
         assertEquals(hero.getId(), selectedHeroes.get(0).getId());
     }
 
+    @Test
+    public void selectBooleanConditionWorks() {
+        List<SuperHero> heroes = getHeroes();
+        heroes.get(3).setIsTrueEvil(true);
+        heroes.get(5).setIsTrueEvil(true);
+        WellSql.insert(heroes).execute();
+        int evilHeroes = WellSql.select(SuperHero.class)
+                .where().equals(SuperHeroTable.IS_TRUE_EVIL, true).endWhere()
+                .getAsCursor().getCount();
+        assertEquals(2, evilHeroes);
+    }
+
     private List<SuperHero> getHeroes() {
         return Arrays.asList(
                 new SuperHero("Hank Pym", 1),
