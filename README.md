@@ -154,6 +154,22 @@ WellSql.delete(SuperHero.class).where()
 
 WellSql.update(SuperHero.class).whereId(hero.getId()).put(anotherHero).execute();
 ```
+
+Update only one field of a Model:
+
+```java
+WellSql.update(SuperHero.class).where()
+       .equals(SuperHeroTable.NAME, "Rocket Raccoon").endWhere()
+       .put("Yaroslav", new InsertMapper<String>() {
+           @Override
+           public ContentValues toCv(String item) {
+               ContentValues cv = new ContentValues();
+               cv.put(SuperHeroTable.NAME, item);
+               return cv;
+           }
+       }).execute();
+```
+
 Factory methods of WellSql class covers most use cases (I think so), but if you want to make something unusual with db you can always call
 
 ```java
