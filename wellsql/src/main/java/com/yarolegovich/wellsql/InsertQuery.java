@@ -25,6 +25,9 @@ public class InsertQuery<T extends Identifiable> {
     private List<T> mToInsert;
     private boolean mAsTransaction;
 
+    boolean isOnConflict = false;
+	int conflictAlgorithm;
+
     InsertQuery(SQLiteDatabase db, List<T> data) {
         mToInsert = data;
         mDb = db;
@@ -34,6 +37,18 @@ public class InsertQuery<T extends Identifiable> {
             mMapper = (InsertMapper<T>) WellSql.mapperFor(item.getClass());
         }
     }
+
+    InsertQuery(SQLiteDatabase db, List<T> data, int conflictAlgorithm) {
+		mToInsert = data;
+		mDb = db;
+		if (!data.isEmpty()) {
+			T item = data.get(0);
+			mTable = WellSql.tableFor(item.getClass());
+			mMapper = (InsertMapper<T>) WellSql.mapperFor(item.getClass());
+		}
+		isOnConflict = true;
+		this.conflictAlgorithm = conflictAlgorithm;
+	}
 
     public InsertQuery<T> withMapper(InsertMapper<T> mapper) {
         mMapper = mapper;
@@ -60,7 +75,12 @@ public class InsertQuery<T extends Identifiable> {
                 if (mTable.shouldAutoincrementId()) {
                     cv.remove("_id");
                 }
-                int index = (int) mDb.insert(mTable.getTableName(), null, cv);
+                int index;
+				if (isOnConflict) {
+					index = (int) mDb.insertWithOnConflict(mTable.getTableName(), null, cv, conflictAlgorithm);
+				} else {
+					index = (int) mDb.insert(mTable.getTableName(), null, cv);
+				}
                 item.setId(index);
             }
             if (mAsTransaction) {
