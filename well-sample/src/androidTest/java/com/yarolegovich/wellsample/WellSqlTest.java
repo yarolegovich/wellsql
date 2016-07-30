@@ -234,6 +234,29 @@ public class WellSqlTest {
         assertEquals(2, evilHeroes);
     }
 
+    @Test
+    public void checkLongValuesInsertAndQuery() {
+        List<SuperHero> heroes = getHeroes();
+        heroes.get(3).setLongField(Long.MAX_VALUE);
+        heroes.get(4).setLongField(Long.MAX_VALUE);
+        WellSql.insert(heroes).execute();
+        int evilHeroes = WellSql.select(SuperHero.class)
+                .where().equals(SuperHeroTable.LONG_FIELD, Long.MAX_VALUE).endWhere()
+                .getAsCursor().getCount();
+        assertEquals(2, evilHeroes);
+    }
+
+    @Test
+    public void checkLongValuesInsertAndGet() {
+        SuperHero superHero = new SuperHero("FluxC", 1);
+        superHero.setLongField(Long.MAX_VALUE);
+        superHero.setLongerField(Long.MAX_VALUE);
+        WellSql.insert(superHero).execute();
+        SuperHero fluxC = WellSql.select(SuperHero.class).getAsModel().get(0);
+        assertEquals(Long.MAX_VALUE, fluxC.getLongField());
+        assertEquals(Long.MAX_VALUE, fluxC.getLongerField().longValue());
+    }
+
     private List<SuperHero> getHeroes() {
         return Arrays.asList(
                 new SuperHero("Hank Pym", 1),

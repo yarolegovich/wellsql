@@ -64,7 +64,7 @@ public class MapperAdapter<T> implements SQLiteMapper<T> {
             int columnIndex = item.getColumnIndex(column);
             switch (item.getType(columnIndex)) {
                 case Cursor.FIELD_TYPE_INTEGER:
-                    map.put(column, item.getInt(columnIndex));
+                    map.put(column, item.getLong(columnIndex));
                     break;
                 case Cursor.FIELD_TYPE_STRING:
                     map.put(column, item.getString(columnIndex));
