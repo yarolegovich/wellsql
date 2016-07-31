@@ -65,10 +65,18 @@ public class WellSql extends SQLiteOpenHelper {
         return insert(Collections.singletonList(item));
     }
 
-    public static <T extends Identifiable> InsertQuery<T> insert(List<T> items) {
-        return new InsertQuery<>(sInstance.getWritableDatabase(), items);
-    }
+    public static <T extends Identifiable> InsertQuery<T> insertWithOnConflict(T item, int conflictAlgorithm) {
+		return insertWithOnConflict(Collections.singletonList(item), conflictAlgorithm);
+	}
 
+	public static <T extends Identifiable> InsertQuery<T> insert(List<T> items) {
+		return new InsertQuery<>(sInstance.getWritableDatabase(), items);
+	}
+
+	public static <T extends Identifiable> InsertQuery<T> insertWithOnConflict(List<T> items, int conflictAlgorithm) {
+		return new InsertQuery<>(sInstance.getWritableDatabase(), items, conflictAlgorithm);
+	}
+    
     public static <T extends Identifiable> DeleteQuery<T> delete(Class<T> token) {
         return new DeleteQuery<>(sInstance.getWritableDatabase(), token);
     }
