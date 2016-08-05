@@ -2,12 +2,10 @@ package com.yarolegovich.wellsql;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.yarolegovich.wellsql.core.Identifiable;
 import com.yarolegovich.wellsql.core.TableClass;
 import com.yarolegovich.wellsql.mapper.InsertMapper;
-import com.yarolegovich.wellsql.mapper.SQLiteMapper;
 
 import java.util.List;
 
@@ -70,7 +68,6 @@ public class InsertQuery<T extends Identifiable> {
             if (mAsTransaction) {
                 mDb.endTransaction();
             }
-            mDb.close();
         }
     }
 

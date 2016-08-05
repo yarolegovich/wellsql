@@ -5,10 +5,7 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
-import com.yarolegovich.wellsql.mapper.SQLiteMapper;
 import com.yarolegovich.wellsql.mapper.SelectMapper;
-
-import java.util.Iterator;
 
 /**
  * Created by yarolegovich on 01.12.2015.
@@ -28,7 +25,6 @@ public class WellCursor<T> extends CursorWrapper {
     @Override
     public void close() {
         super.close();
-        mDb.close();
     }
 
     @Nullable
