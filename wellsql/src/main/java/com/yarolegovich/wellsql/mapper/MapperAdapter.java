@@ -70,7 +70,7 @@ public class MapperAdapter<T> implements SQLiteMapper<T> {
                     map.put(column, item.getString(columnIndex));
                     break;
                 case Cursor.FIELD_TYPE_FLOAT:
-                    map.put(column, item.getFloat(columnIndex));
+                    map.put(column, item.getDouble(columnIndex));
                     break;
                 case Cursor.FIELD_TYPE_BLOB:
                     map.put(column, item.getBlob(columnIndex));
