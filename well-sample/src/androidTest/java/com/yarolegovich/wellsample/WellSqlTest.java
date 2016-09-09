@@ -128,7 +128,7 @@ public class WellSqlTest {
                 .where().greaterThenOrEqual(SuperHeroTable.FOUGHT, 12).or()
                 .beginGroup().equals(SuperHeroTable.NAME, "Groot").or()
                 .equals(SuperHeroTable.NAME, "Rocket Raccoon").endGroup().endWhere()
-                .orderBy(SelectQuery.ORDER_DESCENDING, SuperHeroTable.FOUGHT)
+                .orderBy(SuperHeroTable.FOUGHT, SelectQuery.ORDER_DESCENDING)
                 .limit(12)
                 .getAsModel();
 
@@ -148,7 +148,8 @@ public class WellSqlTest {
                 .where().greaterThenOrEqual(SuperHeroTable.FOUGHT, 12).or()
                 .beginGroup().equals(SuperHeroTable.NAME, "Groot").or()
                 .equals(SuperHeroTable.NAME, "Rocket Raccoon").endGroup().endWhere()
-                .orderBy(SelectQuery.ORDER_DESCENDING, SuperHeroTable.FOUGHT, SuperHeroTable.NAME)
+                .orderBy(SuperHeroTable.FOUGHT, SelectQuery.ORDER_DESCENDING)
+                .orderBy(SuperHeroTable.NAME, SelectQuery.ORDER_DESCENDING)
                 .limit(12)
                 .getAsModel();
 

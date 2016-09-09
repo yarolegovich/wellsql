@@ -87,8 +87,13 @@ public class SelectQuery<T extends Identifiable> implements ConditionClauseConsu
         return this;
     }
 
-    public SelectQuery<T> orderBy(@Order int order, String ...columns) {
-        mSortOrder = TextUtils.join(", ", columns).concat(order >= 0 ? " ASC" : " DESC");
+    public SelectQuery<T> orderBy(String column, @Order int order) {
+        if (!TextUtils.isEmpty(mSortOrder)) {
+            mSortOrder = mSortOrder.concat(", ").concat(column + (order >= 0 ? " ASC" : " DESC"));
+        } else {
+            mSortOrder = column + (order >= 0 ? " ASC" : " DESC");
+        }
+
         return this;
     }
 
