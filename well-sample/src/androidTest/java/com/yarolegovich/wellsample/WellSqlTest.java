@@ -137,6 +137,27 @@ public class WellSqlTest {
     }
 
     @Test
+    public void multipleOrderByWorks() {
+        WellSql.insert(getHeroes()).execute();
+
+        SuperHero superHero = new SuperHero("FluxC", 1);
+        superHero.setFoughtVillains(42);
+        WellSql.insert(superHero).execute();
+
+        List<SuperHero> heroes = WellSql.select(SuperHero.class)
+                .where().greaterThenOrEqual(SuperHeroTable.FOUGHT, 12).or()
+                .beginGroup().equals(SuperHeroTable.NAME, "Groot").or()
+                .equals(SuperHeroTable.NAME, "Rocket Raccoon").endGroup().endWhere()
+                .orderBy(SelectQuery.ORDER_DESCENDING, SuperHeroTable.FOUGHT, SuperHeroTable.NAME)
+                .limit(12)
+                .getAsModel();
+
+        assertEquals(5, heroes.size());
+        assertTrue(heroes.get(0).getName().equals("FluxC"));
+        assertTrue(heroes.get(1).getName().equals("Douglas Adams"));
+    }
+
+    @Test
     public void constraintsWork() {
         SuperHero hero = getHeroes().get(0);
         hero.setFoughtVillains(-1);
