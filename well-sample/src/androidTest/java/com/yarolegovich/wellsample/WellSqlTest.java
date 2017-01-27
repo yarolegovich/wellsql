@@ -200,6 +200,19 @@ public class WellSqlTest {
     }
 
     @Test
+    public void conditionClauseEqualAndNotEqual() {
+        List<SuperHero> heroes = getHeroes();
+        WellSql.insert(heroes).execute();
+        List<SuperHero> found = WellSql.select(SuperHero.class)
+                .where()
+                .equals(SuperHeroTable.NAME, "Douglas Adams")
+                .not().equals(SuperHeroTable.FOUGHT, 12)
+                .endWhere()
+                .getAsModel();
+        assertEquals(1, found.size());
+    }
+
+    @Test
     public void insertIdNoAutoincrementWorks() {
         WellSql.insert(getVillains()).execute();
         List<Villain> villains = WellSql.select(Villain.class).getAsModel();
