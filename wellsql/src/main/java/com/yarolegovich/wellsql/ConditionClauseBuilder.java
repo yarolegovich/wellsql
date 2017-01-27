@@ -114,6 +114,7 @@ public class ConditionClauseBuilder<T extends ConditionClauseConsumer> {
     }
 
     public ConditionClauseBuilder<T> not() {
+        check();
         mSelectionBuilder.append(" NOT ");
         return this;
     }
