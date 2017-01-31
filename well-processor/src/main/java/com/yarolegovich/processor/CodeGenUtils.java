@@ -79,23 +79,24 @@ public class CodeGenUtils {
         casts = new HashMap<>();
 
         casts.put(boolean.class.getCanonicalName(), "((Long) cv.get($S)) == 1");
-        casts.put(short.class.getCanonicalName(), "((Long) cv.get($S)).shortValue()");
-        casts.put(long.class.getCanonicalName(), "((Long) cv.get($S)).longValue()");
-        casts.put(byte.class.getCanonicalName(), "((Long) cv.get($S)).byteValue()");
-
         casts.put(Boolean.class.getCanonicalName(), casts.get(boolean.class.getCanonicalName()));
+
+        casts.put(short.class.getCanonicalName(), "((Long) cv.get($S)).shortValue()");
         casts.put(Short.class.getCanonicalName(), casts.get(short.class.getCanonicalName()));
+
+        casts.put(long.class.getCanonicalName(), "((Long) cv.get($S)).longValue()");
         casts.put(Long.class.getCanonicalName(), casts.get(long.class.getCanonicalName()));
+
+        casts.put(byte.class.getCanonicalName(), "((Long) cv.get($S)).byteValue()");
         casts.put(Byte.class.getCanonicalName(), casts.get(byte.class.getCanonicalName()));
 
-        casts.put(double.class.getCanonicalName(), "((Double) cv.get($S)).doubleValue()");
+        casts.put(int.class.getCanonicalName(), "((Long) cv.get($S)).intValue()");
+        casts.put(Integer.class.getCanonicalName(), casts.get(int.class.getCanonicalName()));
 
+        casts.put(double.class.getCanonicalName(), "((Double) cv.get($S)).doubleValue()");
         casts.put(Double.class.getCanonicalName(), casts.get(double.class.getCanonicalName()));
 
-        casts.put(int.class.getCanonicalName(), "((Long) cv.get($S)).intValue()");
-        casts.put(float.class.getCanonicalName(), "(Float) cv.get($S)");
-
-        casts.put(Integer.class.getCanonicalName(), casts.get(int.class.getCanonicalName()));
+        casts.put(float.class.getCanonicalName(), "((Double) cv.get($S)).floatValue()");
         casts.put(Float.class.getCanonicalName(), casts.get(float.class.getCanonicalName()));
 
         casts.put(String.class.getCanonicalName(), "(String) cv.get($S)");

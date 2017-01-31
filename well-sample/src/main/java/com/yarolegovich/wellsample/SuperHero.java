@@ -36,8 +36,13 @@ public class SuperHero implements Identifiable {
     @Column private long longField;
     @Column private Long longerField;
     @Column private byte shorterField;
+    @Column private float floatField;
+    @Column private Float floaterField;
+    @Column private double doubleField;
+    @Column private Double doublerField;
     @Column private Date birthday = new Date(System.currentTimeMillis());
     @Column private boolean isTrueEvil;
+
 
     public short getShortField() {
         return shortField;
@@ -118,5 +123,37 @@ public class SuperHero implements Identifiable {
 
     public void setIsTrueEvil(boolean isTrueEvil) {
         this.isTrueEvil = isTrueEvil;
+    }
+
+    public float getFloatField() {
+        return floatField;
+    }
+
+    public void setFloatField(float floatField) {
+        this.floatField = floatField;
+    }
+
+    public Float getFloaterField() {
+        return floaterField;
+    }
+
+    public void setFloaterField(Float floaterField) {
+        this.floaterField = floaterField;
+    }
+
+    public double getDoubleField() {
+        return doubleField;
+    }
+
+    public void setDoubleField(double doubleField) {
+        this.doubleField = doubleField;
+    }
+
+    public Double getDoublerField() {
+        return doublerField;
+    }
+
+    public void setDoublerField(Double doublerField) {
+        this.doublerField = doublerField;
     }
 }
