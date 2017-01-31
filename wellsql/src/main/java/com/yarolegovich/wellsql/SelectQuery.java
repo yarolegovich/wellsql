@@ -11,7 +11,6 @@ import android.text.TextUtils;
 
 import com.yarolegovich.wellsql.core.Identifiable;
 import com.yarolegovich.wellsql.core.TableClass;
-import com.yarolegovich.wellsql.mapper.SQLiteMapper;
 import com.yarolegovich.wellsql.mapper.SelectMapper;
 
 import java.lang.annotation.ElementType;
@@ -132,7 +131,6 @@ public class SelectQuery<T extends Identifiable> implements ConditionClauseConsu
             return result;
         } finally {
             cursor.close();
-            mDb.close();
         }
     }
 
@@ -159,7 +157,6 @@ public class SelectQuery<T extends Identifiable> implements ConditionClauseConsu
             return result;
         } finally {
             cursor.close();
-            mDb.close();
         }
     }
 

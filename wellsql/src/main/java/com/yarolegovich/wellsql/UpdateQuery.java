@@ -51,15 +51,11 @@ public class UpdateQuery<T extends Identifiable> implements ConditionClauseConsu
     public int replaceWhereId(List<T> items) {
         mSelection = WHERE_ID;
         int rowsAffected = 0;
-        try {
-            String[] args = new String[1];
-            for (T item : items) {
-                args[0] = String.valueOf(item.getId());
-                ContentValues cv = mMapper.toCv(item);
-                rowsAffected += mDb.update(mTableName, cv, mSelection, args);
-            }
-        } finally {
-            mDb.close();
+        String[] args = new String[1];
+        for (T item : items) {
+            args[0] = String.valueOf(item.getId());
+            ContentValues cv = mMapper.toCv(item);
+            rowsAffected += mDb.update(mTableName, cv, mSelection, args);
         }
         return rowsAffected;
     }
@@ -80,11 +76,7 @@ public class UpdateQuery<T extends Identifiable> implements ConditionClauseConsu
     }
 
     public int execute() {
-        try {
-            return mDb.update(mTableName, mContentValues, mSelection, mSelectionArgs);
-        } finally {
-            mDb.close();
-        }
+        return mDb.update(mTableName, mContentValues, mSelection, mSelectionArgs);
     }
 
     @Override

@@ -22,8 +22,11 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -290,6 +293,50 @@ public class WellSqlTest {
         SuperHero fluxC = WellSql.select(SuperHero.class).getAsModel().get(0);
         assertEquals(Long.MAX_VALUE, fluxC.getLongField());
         assertEquals(Long.MAX_VALUE, fluxC.getLongerField().longValue());
+    }
+
+    @Test
+    public void checkConcurrentInserts() throws InterruptedException {
+        int N = 100;
+        final CountDownLatch countDownLatch = new CountDownLatch(N);
+        for (int i = 0; i < N; i++) {
+            final String name = "FluxC" + String.valueOf(i);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    WellSql.insert(new SuperHero(name, 1)).execute();
+                    // Random select to probe for a crash
+                    WellSql.select(SuperHero.class).getAsCursor().getCount();
+                    countDownLatch.countDown();
+                }
+            }).start();
+        }
+        assertNotEquals(false, countDownLatch.await(30, TimeUnit.SECONDS));
+        int heroesCount = WellSql.select(SuperHero.class).getAsCursor().getCount();
+        assertEquals(N, heroesCount);
+    }
+
+    @Test
+    public void checkConcurrentSelects() throws InterruptedException {
+        int N = 100;
+        final CountDownLatch countDownLatch = new CountDownLatch(N);
+        for (int i = 0; i < N; i++) {
+            String name = "FluxC" + String.valueOf(i);
+            WellSql.insert(new SuperHero(name, 1)).execute();
+        }
+        for (int i = 0; i < N; i++) {
+            final String name = "FluxC" + String.valueOf(i);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int heroCount = WellSql.select(SuperHero.class).where().equals(SuperHeroTable.NAME, name).endWhere()
+                                .getAsCursor().getCount();
+                    assertEquals(1, heroCount);
+                    countDownLatch.countDown();
+                }
+            }).start();
+        }
+        assertNotEquals(false, countDownLatch.await(30, TimeUnit.SECONDS));
     }
 
     private List<SuperHero> getHeroes() {

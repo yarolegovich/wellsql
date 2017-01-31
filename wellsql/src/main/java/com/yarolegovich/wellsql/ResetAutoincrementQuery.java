@@ -19,10 +19,6 @@ public class ResetAutoincrementQuery {
     }
 
     public void reset() {
-        try {
-            mDb.delete(TABLE_NAME, SELECTION, new String[] {mName});
-        } finally {
-            mDb.close();
-        }
+        mDb.delete(TABLE_NAME, SELECTION, new String[]{mName});
     }
 }
